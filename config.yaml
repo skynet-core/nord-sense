@@ -1,0 +1,58 @@
+name: "Acer Predator Triton 500 P515-51"
+cmdPort: 0x66 #! required
+dataPort: 0x62 #! required
+zones: 
+  - name: System
+    address: 0xA9
+    min: 0x00
+    max: 0xff
+  - name: CPU Zone
+    address: 0xA8 # required!
+    min: 0x00 # default 0x00
+    max: 0xff # default 0xff
+    fans:
+      - name: Fan 1
+        address: 0x93 # required!
+        auto: 0x04 # default 0x04
+        manual: 0x14 # default 0x14
+        wrReg: 0x94 # required!
+        rdReg: 0x95 # required!
+        min: 0xff # default 0xff
+        max: 0x00 # default 0x00
+  - name: GPU Zone
+    address: 0xB8
+    min: 0x00
+    max: 0xff
+    fans:
+      - name: Fan 1
+        address: 0x96 # required!
+        auto: 0x04
+        manual: 0x14
+        wrReg: 0x97
+        rdReg: 0x98
+        min:    0xff
+        max:    0x1D
+      - name: Fan 2
+        address: 0x9A
+        auto: 0x04
+        manual: 0x14
+        wrReg: 0x9B
+        rdReg: 0x9C
+        min:    0xff
+        max:    0x00
+config: 
+  max: 0x5A # default 0x5a (90 C)
+  min: 0x00 # default 0x00 (0 C)
+  levels: # if no stages it then use 25% step
+    - min: 25 # while we between min and max fan is in auto mode
+      max: 35 # when we overflow max then manual control is enabled and set to 25% of Max RPM
+      freq: 25
+    - min: 50
+      max: 65
+      freq: 50
+    - min: 75
+      max: 80
+      freq: 75
+    - min: 95
+      max: 100
+      freq: 100
