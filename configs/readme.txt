@@ -1,0 +1,1 @@
+# workaround fro nfpm folder mapping

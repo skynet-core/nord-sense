@@ -1,5 +1,4 @@
-import posix
-import bitops
+import posix, bitops
   
 const
   EC_SC = 0

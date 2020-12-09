@@ -1,0 +1,71 @@
+name: pre-release
+on:
+  repository_dispatch:
+    types: [pre-release]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build static binaries
+      uses: skynet-core/nim@v1.2
+    - name: Archive nsense binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: binaries
+        path: |
+          ${{ github.workspace }}/nsense
+          ${{ github.workspace }}/nsensepkg/cli/nsensectl
+  beta-release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Download nsense artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: binaries
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
+    - name: Generate nfpm config
+      id: nfpm-cfg
+      shell: bash
+      run: |
+        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
+        echo "::set-output name=version::$version"
+    - name: Create deb package
+      id: deb-pack
+      uses: skynet-core/nfpm@v1.3
+      with:
+        config: nfpm.yaml
+        packager: deb
+    - name: Create rpm package
+      id: rpm-pack
+      uses: skynet-core/nfpm@v1.3
+      with:
+        config: nfpm.yaml
+        packager: rpm
+    - name: Archive nsense packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: |
+          ${{ github.workspace }}/*.deb
+          ${{ github.workspace }}/*.rpm
+    - name: Install Github-Release
+      shell: bash
+      run: go get github.com/github-release/github-release
+    - name: Draft new release
+      env:
+        LABEL: 'pre-release'
+        VERSION: ${{ steps.nfpm-cfg.outputs.version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        github-release -v release -u skynet-core -r nord-sense -t v$VERSION -n $LABEL
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.deb -n ${{ steps.deb-pack.outputs.package }}
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}

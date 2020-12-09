@@ -1,0 +1,30 @@
+name: "nsense"
+arch: "amd64"
+platform: "linux"
+version: "@version"
+section: "system"
+priority: "extra"
+maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
+description: |
+  Nord Sense provides efficient control for fans on Gaming Laptops. 
+vendor: "Skynet Core Ltd."
+homepage: "https://github.com/skynet-core/nsense"
+license: "MIT"
+files:
+  ./nsense: "/opt/nsense/bin/nsense"
+  ./nsensepkg/cli/nsensectl: "/opt/nsense/bin/nsensectl"
+  ./configs: "/opt/nsense/share/configs"
+  ./res/service: "/opt/nsense/share/service"
+config_files:
+symlinks:
+  /opt/nsense/bin/nsense: "/usr/local/bin/nsense"
+  /opt/nsense/bin/nsensectl: "/usr/local/bin/nsensectl"
+overrides:
+  rpm:
+    scripts:
+      postinstall: ./res/scripts/rpm/postinstall.sh
+      preremove: ./res/scripts/rpm/preremove.sh
+  deb:
+    scripts:
+      postinstall: ./res/scripts/deb/postinstall.sh
+      preremove: ./res/scripts/deb/preremove.sh

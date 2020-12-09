@@ -1,0 +1,31 @@
+name: pull_request
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [opened,edited]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Check out code'
+      uses: actions/checkout@v2
+    - name: 'Run tests'
+      uses: skynet-core/nim@v1.2
+      with:
+        command: 'nimble test -y'
+  pre-build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build static binaries
+      uses: skynet-core/nim@v1.2
+    - name: Archive nsense binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: binaries
+        path: |
+          ${{ github.workspace }}/nsense
+          ${{ github.workspace }}/nsensepkg/cli/nsensectl

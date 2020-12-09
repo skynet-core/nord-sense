@@ -8,7 +8,7 @@ import ../port
 
 when isMainModule:
     let ec = newPort(0x66,0x62)
-    var p = newParser("psensectl"):
+    var p = newParser("nsensectl"):
         command("port"):
             flag("-w","--write")
             flag("-r","--read")

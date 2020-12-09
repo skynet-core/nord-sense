@@ -1,0 +1,14 @@
+[Unit]
+Description=Acer nsense service
+
+[Service]
+Type=simple
+ExecStart=/opt/nsense/bin/nsense -p /run/nsense.pid -c /opt/nsense/etc/config.yaml -f
+ExecStop=sh -c 'kill -s TERM `cat /run/nsense.pid`'
+ExecReload=sh -c 'kill -s HUP `cat /run/nsense.pid`'
+PIDFile=/run/nsense.pid
+TimeoutStopSec=20
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

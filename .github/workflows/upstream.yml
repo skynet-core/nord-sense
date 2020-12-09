@@ -1,0 +1,65 @@
+name: release-trigger
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+jobs:
+  commit:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Check out code'
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+    - name: 'Increment fix version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'fix/') }}
+      shell: sh
+      run: |
+        version="$(cat RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        fix=$(( $fix + 1 ))
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > RELEASE
+    - name: 'Increment minor version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'feature/') }}
+      shell: sh
+      run: |
+        version="$(cat RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        minor=$(( $minor + 1 ))
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > RELEASE
+    - name: 'Increment major version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'next/') }}
+      run: |
+        version="$(cat RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        major=$(( $major + 1 ))
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > RELEASE
+    - name: 'Get version number'
+      id: meta-run
+      run: |
+        version="v$(cat ./RELEASE | awk '{$1=$1};1')"
+        echo "::set-output name=VERSION::$version"
+    - name: Commit changes file
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'chore: pre-release'
+        branch: develop
+        commit_user_name: skynet-core
+        tagging_message: "${{ steps.meta-run.output.VERSION }}"
+    - name: Trigger repository custom event
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+        event-type: 'pre-release'
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

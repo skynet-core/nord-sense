@@ -1,4 +1,6 @@
 name: "Acer Predator Triton 500 P515-51"
+reaction: 10
+pollTickMs: 1000
 cmdPort: 0x66 #! required
 dataPort: 0x62 #! required
 zones: 
@@ -40,19 +42,26 @@ zones:
         rdReg: 0x9C
         min:    0xff
         max:    0x00
+    levels:
+      - enterTemp: 30.0
+        freq: 50.0
+      - enterTemp: 40.0
+        freq: 55.0
+      - enterTemp: 45.0
+        freq: 60.0
+      - enterTemp: 50.0
+        freq: 65.0
+      - enterTemp: 55.0
+        freq: 70.0
+      - enterTemp: 60.0
+        freq: 75.0
+      - enterTemp: 65.0
+        freq: 80.0
+      - enterTemp: 70.0
+        freq: 85.0
+      - enterTemp: 75.0
+        freq: 90.0
+      - enterTemp: 80.0
+        freq: 100.0
 config: 
-  max: 0x5A # default 0x5a (90 C)
-  min: 0x00 # default 0x00 (0 C)
-  levels: # if no stages it then use 25% step
-    - min: 25 # while we between min and max fan is in auto mode
-      max: 35 # when we overflow max then manual control is enabled and set to 25% of Max RPM
-      freq: 25
-    - min: 50
-      max: 65
-      freq: 50
-    - min: 75
-      max: 80
-      freq: 75
-    - min: 95
-      max: 100
-      freq: 100
+  maxTemp: 0x64 # default 0x5a (100 C)

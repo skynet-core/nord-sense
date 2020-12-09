@@ -1,0 +1,13 @@
+[Unit]
+Description=Acer nsense service sleep hook
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=sh -c 'kill -s TSTP `cat /run/nsense.pid`'
+ExecStop=sh -c 'kill -s CONT `cat /run/nsense.pid`'
+
+[Install]
+WantedBy=sleep.target 

@@ -1,0 +1,17 @@
+name: test
+on: 
+  push:
+    branches:
+      - fix/*
+      - feature/*
+      - next/*
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Check out code'
+      uses: actions/checkout@v2
+    - name: 'Run tests'
+      uses: skynet-core/nim@v1.2
+      with:
+        command: 'nimble test -y'
