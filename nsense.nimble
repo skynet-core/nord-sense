@@ -16,7 +16,7 @@ bin           = @["nsense","nsensepkg/cli/nsensectl"]
 
 requires "nim >= 1.4.0"
 requires "yaml#head"
-requires "argparse >= 1.0.0"
+requires "argparse >= 2.0.0"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()

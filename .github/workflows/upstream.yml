@@ -20,6 +20,7 @@ jobs:
       id: meta-run
       run: |
         version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        echo "::debug::Incrementing $version"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
@@ -27,15 +28,18 @@ jobs:
           fix/* )
             fix=$(( $fix + 1 ))
           ;;
-          feature/*)
+          feature/* )
             minor=$(( $minor + 1 ))
           ;;
-          next/*)
+          next/*  )
             major=$(( $major + 1 ))
           ;;
-          *) ;;
+          * ) 
+            exit 1
+          ;;
         esac
         new_ver="$major.$minor.$fix"
+        echo "::debug::New version $new_ver"
         echo "::set-output name=VERSION::$new_ver"        
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
