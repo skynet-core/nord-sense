@@ -11,7 +11,6 @@ jobs:
     steps:
     - name: 'Check out code'
       uses: actions/checkout@v2
-      run: git fetch --prune --unshallow
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: 'Increment version'
@@ -20,6 +19,7 @@ jobs:
       shell: sh
       id: meta-run
       run: |
+        git fetch --prune --unshallow
         version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
         echo "::debug::Incrementing $version"
         fix=$(echo $version | cut -d '.' -f3)
