@@ -11,6 +11,7 @@ jobs:
     steps:
     - name: 'Check out code'
       uses: actions/checkout@v2
+      run: git fetch --prune --unshallow
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: 'Increment version'
