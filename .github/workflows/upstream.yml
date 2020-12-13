@@ -42,14 +42,14 @@ jobs:
         new_ver="$major.$minor.$fix"
         cat nsense.nimble | awk "/version/{sub(/[0-9]+.[0-9]+.[0-9]+/,\"$new_ver\",\$0)};1" > temp.nimble && mv temp.nimble nsense.nimble
         echo "::debug::New version $new_ver"
-        echo "::set-output name=VERSION::$new_ver"        
+        echo "::set-output name=version::v$new_ver"        
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: 'release: develop'
         branch: develop
         commit_user_name: skynet-core
-        tagging_message: "v${{ steps.meta-run.output.VERSION }}"
+        tagging_message: ${{ steps.meta-run.output.version }}
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:
