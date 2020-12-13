@@ -13,50 +13,37 @@ jobs:
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
-    - name: 'Increment fix version'
-      if: ${{ startsWith(github.event.pull_request.head.ref,'fix/') }}
+    - name: 'Increment version'
+      env:
+        HEAD_REF: ${{ github.event.pull_request.head.ref }}
       shell: sh
-      run: |
-        version="$(cat RELEASE | awk '{$1=$1};1')"
-        fix=$(echo $version | cut -d '.' -f3)
-        minor=$(echo $version | cut -d '.' -f2)
-        major=$(echo $version | cut -d '.' -f1)
-        fix=$(( $fix + 1 ))
-        new_ver="$major.$minor.$fix"
-        echo -n $new_ver > RELEASE
-    - name: 'Increment minor version'
-      if: ${{ startsWith(github.event.pull_request.head.ref,'feature/') }}
-      shell: sh
-      run: |
-        version="$(cat RELEASE | awk '{$1=$1};1')"
-        fix=$(echo $version | cut -d '.' -f3)
-        minor=$(echo $version | cut -d '.' -f2)
-        major=$(echo $version | cut -d '.' -f1)
-        minor=$(( $minor + 1 ))
-        new_ver="$major.$minor.$fix"
-        echo -n $new_ver > RELEASE
-    - name: 'Increment major version'
-      if: ${{ startsWith(github.event.pull_request.head.ref,'next/') }}
-      run: |
-        version="$(cat RELEASE | awk '{$1=$1};1')"
-        fix=$(echo $version | cut -d '.' -f3)
-        minor=$(echo $version | cut -d '.' -f2)
-        major=$(echo $version | cut -d '.' -f1)
-        major=$(( $major + 1 ))
-        new_ver="$major.$minor.$fix"
-        echo -n $new_ver > RELEASE
-    - name: 'Get version number'
       id: meta-run
       run: |
-        version="v$(cat ./RELEASE | awk '{$1=$1};1')"
-        echo "::set-output name=VERSION::$version"
+        version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        case $HEAD_REF in
+          fix/* )
+            fix=$(( $fix + 1 ))
+          ;;
+          feature/*)
+            minor=$(( $minor + 1 ))
+          ;;
+          next/*)
+            major=$(( $major + 1 ))
+          ;;
+          *) ;;
+        esac
+        new_ver="$major.$minor.$fix"
+        echo "::set-output name=VERSION::$new_ver"        
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: 'chore: pre-release'
+        commit_message: 'release: develop'
         branch: develop
         commit_user_name: skynet-core
-        tagging_message: "${{ steps.meta-run.output.VERSION }}"
+        tagging_message: "v${{ steps.meta-run.output.VERSION }}"
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:

@@ -16,9 +16,6 @@ files:
   ./configs: "/opt/nsense/share/configs"
   ./res/service: "/opt/nsense/share/service"
 config_files:
-symlinks:
-  /opt/nsense/bin/nsense: "/usr/local/bin/nsense"
-  /opt/nsense/bin/nsensectl: "/usr/local/bin/nsensectl"
 overrides:
   rpm:
     scripts:
