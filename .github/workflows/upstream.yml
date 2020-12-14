@@ -21,7 +21,6 @@ jobs:
       run: |
         git fetch --prune --tags
         version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
-        echo "::debug::Incrementing $version"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
@@ -41,7 +40,6 @@ jobs:
         esac
         new_ver="$major.$minor.$fix"
         cat nsense.nimble | awk "/version/{sub(/[0-9]+.[0-9]+.[0-9]+/,\"$new_ver\",\$0)};1" > temp.nimble && mv temp.nimble nsense.nimble
-        echo "::debug::New version $new_ver"
         echo "::set-output name=version::v$new_ver"        
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -49,7 +47,7 @@ jobs:
         commit_message: 'release: develop'
         branch: develop
         commit_user_name: skynet-core
-        tagging_message: ${{ steps.meta-run.output.version }}
+        tagging_message: ${{ steps.meta-run.outputs.version }}
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:

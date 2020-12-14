@@ -34,8 +34,8 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 
         cd /tmp && git clone git@github.com:skynet-core/nsense.git
         cd ./nsense && nimble build -d:release
-        nimble setup --configName:AcerP515-51   // install files into your system
-        nimble purge                            // uninstall files from system
+        nimble setup --configName:AcerP515-51   //  install files into your system
+        nimble purge                            //  uninstall files from system
 
 ## TODO list
 
