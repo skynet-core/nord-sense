@@ -10,12 +10,22 @@ description: |
 vendor: "Skynet Core Ltd."
 homepage: "https://github.com/skynet-core/nsense"
 license: "MIT"
+
+empty_folders:
+  - /opt/nsense/bin
+  - /opt/nsense/etc
+  - /opt/nsense/share/configs
+  - /opt/nsense/share/service
+  - /opt/nsense/share/service/systemd
+
 files:
-  ./nsense: "/opt/nsense/bin/nsense"
-  ./nsensepkg/cli/nsensectl: "/opt/nsense/bin/nsensectl"
-  ./configs: "/opt/nsense/share/configs"
-  ./res/service: "/opt/nsense/share/service"
+  ./nsense: /opt/nsense/bin/nsense
+  ./nsensepkg/cli/nsensectl: /opt/nsense/bin/nsensectl
+
 config_files:
+  ./configs/*.yaml: /opt/nsense/share/configs/
+  ./res/service/**/*: /opt/nsense/share/service/
+
 overrides:
   rpm:
     scripts:

@@ -4,7 +4,7 @@ set -e
 set -x
 
 echo "Nord Sense Linux postinstall.sh script"
-executable=(readlink /proc/1/exe)
+executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
 if [ "$bin" = "systemd" ]; then
     if ! which systemctl 2>&1 1>/dev/null; then
@@ -16,7 +16,9 @@ if [ "$bin" = "systemd" ]; then
         systemctl stop nsense
     fi
 
-    cp /opt/nsense/share/service/*.service /etc/systemd/system/
+    find /opt/nsense/share/service/systemd \
+        -iname "*.service" -exec sh -c 'cp -f $0 /etc/systemd/system/ && echo "$0 copied"' {} \;
+
     systemctl daemon-reload
     systemctl enable nsense --now
     systemctl enable nsense-sleep

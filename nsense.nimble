@@ -20,7 +20,22 @@ requires "argparse >= 2.0.0"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
-    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense -it smartcoder/nim:v1.4 bash -c 'cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
+    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c 'cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
+
+task package, "Create packages":
+    let dir = getCurrentDir()
+    staticTask()
+    let (tag, exitCode) = gorgeEx("sh","git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v'")
+    if exitCode != 0:
+        quit("failed to get last git tag",exitCode)
+    exec "cat ./nfpm.template.yaml | sed 's|@version|" & tag & "|g' > nfpm.yaml"
+    exec "rm -f *.deb"
+    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense smartcoder/nfpm:v1.5 'cd /home/nim/nord-sense && nfpm pkg -f ./nfpm.yaml -p deb'"
+    exec "rm -f *.rpm"
+    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense smartcoder/nfpm:v1.5 'cd /home/nim/nord-sense && nfpm pkg -f ./nfpm.yaml -p rpm'"
+    echo "packages were successfully created"
+    exec "rm ./nfpm.yaml"
+
 
 task setup, "Install nsense service":
     

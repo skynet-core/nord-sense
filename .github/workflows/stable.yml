@@ -44,13 +44,13 @@ jobs:
         echo "::set-output name=version::$version"
     - name: Create deb package
       id: deb-pack
-      uses: skynet-core/nfpm@v1.3
+      uses: skynet-core/nfpm@v1.5
       with:
         config: nfpm.yaml
         packager: deb
     - name: Create rpm package
       id: rpm-pack
-      uses: skynet-core/nfpm@v1.3
+      uses: skynet-core/nfpm@v1.5
       with:
         config: nfpm.yaml
         packager: rpm
