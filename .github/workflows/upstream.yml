@@ -30,9 +30,12 @@ jobs:
           ;;
           feature/* )
             minor=$(( $minor + 1 ))
+            fix=0
           ;;
           next/*  )
             major=$(( $major + 1 ))
+            minor=0
+            fix=0
           ;;
           * ) 
             exit 1
