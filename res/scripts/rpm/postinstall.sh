@@ -17,7 +17,7 @@ if [ "$bin" = "systemd" ]; then
     fi
 
     find /opt/nsense/share/service/systemd \
-        -iname "*.service" -exec sh -c 'cp -f $0 /etc/systemd/system/ && echo "$0 copied"' {} \;
+        -iname "*.service" -type f -exec sh -c 'cp -f $0 /etc/systemd/system/ && echo "$0 copied"' {} \;
 
     systemctl daemon-reload
     systemctl enable nsense --now

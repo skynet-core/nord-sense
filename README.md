@@ -5,6 +5,7 @@
 [![last release](https://img.shields.io/github/release-date/skynet-core/nord-sense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nord-sense/releases/latest)
 
 ## Daemon service for controlling gaming laptops fans speed on any Linux OS
+
 <h1 align="center">
         <img src="./cold.svg" alt="NSense Logo" width="306" height="344"/>
 </p>
@@ -15,7 +16,6 @@
 2. Flexible and human-friendly config file
 3. Service controlled by signal
 4. Portable (statically built with musl)
-
 
 ## Installation
 
@@ -30,12 +30,18 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 
         sudo rpm -i ./nsense-<version>.rpm // install
         sudo rpm -e nsense // remove
+
 ## How to build
 
         cd /tmp && git clone git@github.com:skynet-core/nsense.git
         cd ./nsense && nimble build -d:release
         nimble setup --configName:AcerP515-51   //  install files into your system
         nimble purge                            //  uninstall files from system
+
+## How to install from signed repository
+
+        wget -q -O - https://deb.wehack.network/KEY.gpg | sudo apt-key add -
+        sudo apt-get update && sudo apt-get install -y nsense
 
 ## TODO list
 

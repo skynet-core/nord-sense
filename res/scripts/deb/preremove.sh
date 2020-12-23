@@ -16,7 +16,7 @@ if [ "$bin" = "systemd" ]; then
         systemctl stop nsense
     fi
 
-    if [ $(find /etc/systemd/system -iname "nsense" | wc -l) -gt 0 ]; then
+    if [ $(find /etc/systemd/system -iname "nsense*" -type f | wc -l) -gt 0 ]; then
         systemctl disable nsense
         systemctl disable nsense-sleep
         rm -f /etc/systemd/system/npsense*.service
