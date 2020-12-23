@@ -74,13 +74,13 @@ jobs:
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.deb -n ${{ steps.deb-pack.outputs.package }}
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
     - name: Deploy signed to repository
-      env: 
-        SSH_PRIV_KEY: ${{ secrets.SSH_PRIV_KEY }}
       run: |
-        echo $SSH_PRIV_KEY | sftp -i /dev/stdin github@wehack.network <<EOF
+        cat<<EOF | base64 -d - | awk '{$1=$1}' | sftp -i /dev/stdin github@wehack.network <<__EOF
+        ${{ secrets.SSH_PRIV_KEY }}
+        EOF
         cd deb/amd64
         mkdir lock
         put ${{ steps.deb-pack.outputs.package }}
         rmdir lock
         exit
-        EOF
+        __EOF
