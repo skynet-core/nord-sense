@@ -39,7 +39,7 @@ jobs:
       shell: bash
       run: |
         git fetch --prune --tags
-        version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        version=$(git tag --list --sort=taggerdate | tail -n 1 | tr -d 'v')
         cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
         echo "::set-output name=version::$version"
     - name: Create deb package
