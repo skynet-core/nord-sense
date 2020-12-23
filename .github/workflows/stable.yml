@@ -38,18 +38,19 @@ jobs:
       id: nfpm-cfg
       shell: bash
       run: |
-        version="$(cat RELEASE | awk '{$1=$1};1')"
+        git fetch --prune --tags
+        version=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
         cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
         echo "::set-output name=version::$version"
     - name: Create deb package
       id: deb-pack
-      uses: skynet-core/nfpm@v1.3
+      uses: skynet-core/nfpm@v1.5
       with:
         config: nfpm.yaml
         packager: deb
     - name: Create rpm package
       id: rpm-pack
-      uses: skynet-core/nfpm@v1.3
+      uses: skynet-core/nfpm@v1.5
       with:
         config: nfpm.yaml
         packager: rpm
@@ -72,3 +73,14 @@ jobs:
         github-release -v release -u skynet-core -r nord-sense -t v$VERSION -n $LABEL
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.deb -n ${{ steps.deb-pack.outputs.package }}
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
+    - name: Deploy signed to repository
+      env: 
+        SSH_PRIV_KEY: ${{ secrets.SSH_PRIV_KEY }}
+      run: |
+        echo $SSH_PRIV_KEY | sftp -i /dev/stdin github@wehack.network <<EOF
+        cd deb/amd64
+        mkdir lock
+        put ${{ steps.deb-pack.outputs.package }}
+        rmdir lock
+        exit
+        EOF

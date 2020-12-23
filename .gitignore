@@ -5,3 +5,5 @@ tests/*
 !tests/*.nim*
 nfpm.yaml
 changelog.*
+*.deb
+*.rpm
