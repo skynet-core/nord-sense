@@ -19,7 +19,7 @@
 
 ## Installation
 
-Download package for [latest release](https://github.com/skynet-core/nsense/releases/latest) and install it using your package manager 
+Download package for [latest release](https://github.com/skynet-core/nsense/releases/latest) and install it using your package manager  
 
 ### Debian derivatives (Ubuntu, Debian etc.)
 
