@@ -75,7 +75,7 @@ jobs:
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
     - name: Deploy signed to repository
       run: |
-        cat<<EOF | base64 -d - | awk '{$1=$1}' | sftp -i /dev/stdin github@wehack.network <<__EOF
+        cat<<EOF | awk '{$1=$1}' | base64 -d - | sftp -i /dev/stdin github@wehack.network <<__EOF
         ${{ secrets.SSH_PRIV_KEY }}
         EOF
         cd deb/amd64
