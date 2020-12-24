@@ -21,10 +21,8 @@ empty_folders:
 files:
   ./nsense: /opt/nsense/bin/nsense
   ./nsensepkg/cli/nsensectl: /opt/nsense/bin/nsensectl
-
-config_files:
   ./configs/*.yaml: /opt/nsense/share/configs/
-  ./res/service/**/*: /opt/nsense/share/service/
+  ./res/service/systemd/*: /opt/nsense/share/service/systemd/
 
 overrides:
   rpm:
