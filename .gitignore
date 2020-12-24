@@ -7,3 +7,4 @@ nfpm.yaml
 changelog.*
 *.deb
 *.rpm
+log

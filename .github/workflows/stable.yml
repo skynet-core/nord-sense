@@ -26,6 +26,22 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Setup SSH Keys and known_hosts
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        cat<<EOF | tee $(pwd)/ask_pass.sh
+        #!/usr/bin/env sh
+        echo \$SECRET
+        EOF
+        chmod +x $(pwd)/ask_pass.sh
+        mkdir -p ~/.ssh
+        ssh-keyscan wehack.network >> ~/.ssh/known_hosts
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        export SSH_ASKPASS=$(pwd)/ask_pass.sh
+        export DISPLAY=:0
+        export SECRET='${{ secrets.KEY_PASS }}'
+        ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: Download nsense artifact
       uses: actions/download-artifact@v2
       with:
@@ -74,13 +90,13 @@ jobs:
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.deb -n ${{ steps.deb-pack.outputs.package }}
         github-release -v upload -u skynet-core -r nord-sense -t v$VERSION -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
     - name: Deploy signed to repository
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-        cat<<EOF | awk '{$1=$1}' | base64 -d - | sftp -i /dev/stdin github@wehack.network <<__EOF
-        ${{ secrets.SSH_PRIV_KEY }}
-        EOF
+        sftp -i /dev/stdin github@wehack.network <<EOF
         cd deb/amd64
         mkdir lock
         put ${{ steps.deb-pack.outputs.package }}
         rmdir lock
         exit
-        __EOF
+        EOF
