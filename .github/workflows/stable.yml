@@ -98,5 +98,11 @@ jobs:
         mkdir lock
         put ${{ steps.deb-pack.outputs.package }}
         rmdir lock
+        cd ../../
+        mkdir rpm/x86_64
+        cd rpm/x86_64
+        mkdir lock
+        put ${{ steps.rpm-pack.outputs.package }}
+        rmdir lock
         exit
         EOF

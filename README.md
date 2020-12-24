@@ -40,8 +40,16 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 
 ## How to install from signed repository
 
+### debian derivatives
+
         wget -q -O - https://deb.wehack.network/KEY.gpg | sudo apt-key add -
         sudo apt-get update && sudo apt-get install -y nsense
+
+### rhel derivatives
+
+        sudo dnf install 'dnf-command(config-manager)'
+        sudo dnf config-manager --add-repo https://rpm.wehack.network
+        sudo dnf install nsense
 
 ## TODO list
 
