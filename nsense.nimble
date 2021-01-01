@@ -3,7 +3,7 @@ import tables
 import strutils
 # Package
 
-version       = "0.6.4"
+version       = "0.6.5"
 author        = "Skynet Core"
 description   = "A new awesome nimble package"
 license       = "MIT"
