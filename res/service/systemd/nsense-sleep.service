@@ -6,8 +6,8 @@ StopWhenUnneeded=yes
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=sh -c 'kill -s TSTP `cat /run/nsense.pid`'
-ExecStop=sh -c 'kill -s CONT `cat /run/nsense.pid`'
+ExecStart=sh -c 'kill -s TSTP `cat /opt/nsense/run/nsense.pid`'
+ExecStop=sh -c 'kill -s CONT `cat /opt/nsense/run/nsense.pid`'
 
 [Install]
 WantedBy=sleep.target 

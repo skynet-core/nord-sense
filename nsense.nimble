@@ -3,7 +3,7 @@ import tables
 import strutils
 # Package
 
-version       = "0.6.0"
+version       = "0.6.1"
 author        = "Skynet Core"
 description   = "A new awesome nimble package"
 license       = "MIT"
@@ -17,10 +17,18 @@ bin           = @["nsense","nsensepkg/cli/nsensectl"]
 requires "nim >= 1.4.0"
 requires "yaml#head"
 requires "argparse >= 2.0.0"
+requires "https://github.com/skynet-core/nim-smbios#0.1.3"
+
+task nsense, "Run nsense service":
+    exec "nim --out:/tmp/nsense r src/nsense.nim -p /tmp/nsense.pid -f"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
-    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c 'cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
+    exec "docker run --rm -v " & dir &
+        ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c '" &
+        "sudo apk update && sudo apk upgrade && sudo apk add sqlite-static &&" &
+        " cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc" &
+        " --passL:-static --dynlibOverride:libsqlite3.so --passL:/usr/lib/libsqlite3.a -d:release --opt:size -y'"
 
 task package, "Create packages":
     let dir = getCurrentDir()

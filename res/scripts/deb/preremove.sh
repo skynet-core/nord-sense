@@ -4,8 +4,12 @@ set -e
 set -x
 
 echo "Nord Sense Linux preremove.sh script"
+
+root="/opt/nsense"
+share="/usr/share"
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
+
 if [ "$bin" = "systemd" ]; then
     if ! which systemctl 2>&1 1>/dev/null; then
         echo "ERROR: systemctl tool is not in PATH" 1>&2

@@ -4,6 +4,8 @@ set -e
 set -x
 
 echo "Nord Sense Linux postinstall.sh script"
+root="/opt/nsense"
+share="/usr/share"
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
 if [ "$bin" = "systemd" ]; then
@@ -16,7 +18,7 @@ if [ "$bin" = "systemd" ]; then
         systemctl stop nsense
     fi
 
-    find /opt/nsense/share/service/systemd \
+    find "$root$share/service/systemd" \
         -iname "*.service" -type f -exec sh -c 'cp -f $0 /etc/systemd/system/ && echo "$0 copied"' {} \;
 
     systemctl daemon-reload
