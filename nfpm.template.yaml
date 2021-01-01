@@ -14,22 +14,24 @@ license: "MIT"
 empty_folders:
   - /opt/nsense/bin
   - /opt/nsense/etc
-  - /opt/nsense/share/configs
-  - /opt/nsense/share/service
-  - /opt/nsense/share/service/systemd
+  - /opt/nsense/usr/share/configs
+  - /opt/nsense/usr/share/service
+  - /opt/nsense/usr/share/service/systemd
 
 files:
   ./nsense: /opt/nsense/bin/nsense
   ./nsensepkg/cli/nsensectl: /opt/nsense/bin/nsensectl
-  ./configs/*.yaml: /opt/nsense/share/configs/
-  ./res/service/systemd/*: /opt/nsense/share/service/systemd/
+  ./configs/*.yaml: /opt/nsense/usr/share/configs/
+  ./res/service/systemd/*: /opt/nsense/usr/share/service/systemd/
 
 overrides:
   rpm:
     scripts:
       postinstall: ./res/scripts/rpm/postinstall.sh
       preremove: ./res/scripts/rpm/preremove.sh
+      postremove: ./res/scripts/rpm/postremove.sh
   deb:
     scripts:
       postinstall: ./res/scripts/deb/postinstall.sh
       preremove: ./res/scripts/deb/preremove.sh
+      postremove: ./res/scripts/deb/postremove.sh

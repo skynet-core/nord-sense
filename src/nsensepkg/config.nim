@@ -50,9 +50,10 @@ type
 proc `<`(a,b: FanConfig): bool = 
   result = a.temp < b.temp
 
-method levelConfig*(fan: Fan, temp: uint8): Option[FanConfig] {. base .} =
-  var foundAt = -1
-  var levels = fan.normLevels
+proc levelConfig*(fan: Fan, temp: uint8): Option[FanConfig] =
+  var 
+    foundAt = -1
+    levels = fan.normLevels
   levels.sort(Ascending)
   for (index, level) in levels.pairs:
     if level.temp <= temp:
@@ -118,8 +119,12 @@ proc fanConfig(fan: ptr Fan, zone: Zone, config: Settings): void =
   # save levels
   fan.normLevels = list
 
-method normalize*(cfg: var Config): void {. base .} =
+proc normalize*(cfg: var Config): void  =
   for zone in cfg.zones:
     for i in 0..zone.fans.high:
       var fanPtr = zone.fans[i].unsafeAddr
       fanConfig(fanPtr, zone, cfg.config)
+
+
+proc ready*(cfg: Config): bool =
+  return cfg.dataPort != 0 and cfg.cmdPort != 0

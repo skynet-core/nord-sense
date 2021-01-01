@@ -49,6 +49,7 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 
         sudo dnf install 'dnf-command(config-manager)'
         sudo dnf config-manager --add-repo https://rpm.wehack.network
+        sudo rpm --import https://rpm.wehack.network/PGP_PUBLIC_KEY.asc
         sudo dnf install nsense
 
 ## TODO list
@@ -57,8 +58,8 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 - [x] Systemd sleep hook via SIGTSTP and SIGCONT signals with switching to BIOS auto mode
 - [x] Systemd unit file (ver 0.6.0)
 - [x] Installation with nimble
-- [ ] Simple FAQ 
-- [ ] Apt, Rpm packages (ver 1.0.0)
+- [ ] Simple FAQ
+- [x] Apt, Rpm packages (ver 0.7.0)
 - [ ] command-line front-end client (ver 1.0.0)
 - [ ] Snap, Flatpak bundles (ver 1.1.0)
 - [ ] Support for different from systemd init systems (ver 1.5.0)

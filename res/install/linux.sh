@@ -5,22 +5,16 @@ set -x
 
 echo "nsense Linux installer script"
 
-short=0
-if [ ! -f "./configs/$1" ]; then
-    if [ ! -f "./configs/$1" ]; then
-        echo "Error: neither $1 or $1.yaml were fond in ./configs folder"
-        exit 1
-    else
-        short=1
-    fi
-fi
-
 if [ ! -d /opt/nsense/bin ]; then
     mkdir -p /opt/nsense/bin
 fi
 
-if [ ! -d /opt/nsense/etc ]; then
-    mkdir -p /opt/nsense/etc
+if [ ! -d /opt/nsense/etc/nsense ]; then
+    mkdir -p /opt/nsense/etc/nsense
+fi
+
+if [ ! -d /opt/nsense/usr/share/configs ]; then
+    mkdir -p /opt/nsense/usr/share/configs
 fi
 
 if systemctl status nsense 2>&1 1>/dev/null; then
@@ -29,14 +23,27 @@ fi
 
 cp -f ./nsense /opt/nsense/bin/
 cp -f ./nsensepkg/cli/nsensectl /opt/nsense/bin/
-if $short; then
-    cp -f "./configs/$1.yaml" /opt/nsense/etc/config.yaml
+cp -f ./configs/*.yaml /opt/nsense/usr/share/configs
+cp -fr ./res/service /opt/nsense/usr/share/
+
+executable=$(readlink /proc/1/exe)
+bin=${executable##*/}
+
+if [ "$bin" = "systemd" ]; then
+
+    if systemctl status nsense 2>&1 1>/dev/null; then
+        systemctl stop nsense
+    fi
+
+    cp -f ./res/service/systemd/* /etc/systemd/system/
+
+    systemctl daemon-reload
+    systemctl enable nsense --now
+    systemctl enable nsense-sleep
+
 else
-    cp -f "./configs/$1" /opt/nsense/etc/config.yaml
+    echo "ERROR: your init system seems isn't supported" 1>&2
+    exit 1
 fi
 
-cp -f ./res/service/systemd/* /etc/systemd/system/
-
-systemctl daemon-reload
-systemctl enable nsense --now
-systemctl enable nsense-sleep
+echo "INFO: Nord Sense was sucessfully installed"

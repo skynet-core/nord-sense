@@ -4,6 +4,8 @@ set -e
 set -x
 
 echo "Nord Sense Linux preremove.sh script"
+root="/opt/nsense"
+share="/usr/share"
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
 if [ "$bin" = "systemd" ]; then
