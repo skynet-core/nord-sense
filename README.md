@@ -35,8 +35,17 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
 
         cd /tmp && git clone git@github.com:skynet-core/nsense.git
         cd ./nsense && nimble build -d:release
-        nimble setup --configName:AcerP515-51   //  install files into your system
+        nimble setup
         nimble purge                            //  uninstall files from system
+
+## How to package
+
+        cd /tmp && git clone git@github.com:skynet-core/nsense.git
+        cd ./nsense && nimble build -d:release
+        nimble package
+        ls *.rpm *.deb
+
+**for this step docker is required
 
 ## How to install from signed repository
 

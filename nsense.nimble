@@ -46,28 +46,8 @@ task package, "Create packages":
 
 
 task setup, "Install nsense service":
-    
     let dir = getCurrentDir()
-    var 
-        keys = newSeq[string]()
-        vals = newSeq[string]()
-    for i in countup(0, paramCount(), 1):
-        let parts = paramStr(i).split(":")
-        keys.add(parts[0])
-        if parts.len > 1:
-            vals.add(parts[1])
-        else:
-            vals.add("") 
-    let argsTable = zip(keys,vals).toTable
-    if not argsTable.contains("--configName"):
-        echo "Error: --configName missed"
-        quit(1)
-
-    if argsTable.getOrDefault("--configName").strip().len == 0:
-        echo "Error: --configName value is empty string"
-        quit(1)
-
-    exec selfExe() & " " & dir & "/res/install/" & hostOS & ".nims " & argsTable["--configName"]
+    exec selfExe() & " " & dir & "/res/install/" & hostOS & ".nims "
 
 task purge, "Removing service from system":
     let dir = getCurrentDir()

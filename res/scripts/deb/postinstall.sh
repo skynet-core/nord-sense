@@ -7,9 +7,12 @@ echo "Nord Sense Linux postinstall.sh script"
 
 root="/opt/nsense"
 share="/usr/share"
+bindir="/bin"
+
+chmod +x "$root$bindir/*"
+
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
-
 if [ "$bin" = "systemd" ]; then
     if ! which systemctl 2>&1 1>/dev/null; then
         echo "ERROR: systemctl tool is not in PATH" 1>&2
