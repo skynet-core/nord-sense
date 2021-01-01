@@ -45,7 +45,7 @@ Download package for [latest release](https://github.com/skynet-core/nsense/rele
         nimble package
         ls *.rpm *.deb
 
-**for this step docker is required
+***for this step docker is required
 
 ## How to install from signed repository
 
