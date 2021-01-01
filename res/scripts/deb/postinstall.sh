@@ -9,7 +9,7 @@ root="/opt/nsense"
 share="/usr/share"
 bindir="/bin"
 
-chmod +x "$root$bindir/*"
+find "$root$bindir" -type f -exec sh -c 'chmod +x $0' {} \;
 
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
