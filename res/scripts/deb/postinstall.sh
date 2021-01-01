@@ -7,6 +7,10 @@ echo "Nord Sense Linux postinstall.sh script"
 
 root="/opt/nsense"
 share="/usr/share"
+bindir="/bin"
+
+chmod +x "$root$bindir/*"
+
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}
 

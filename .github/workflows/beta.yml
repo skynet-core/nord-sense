@@ -10,6 +10,11 @@ jobs:
       uses: actions/checkout@v2
     - name: Build static binaries
       uses: skynet-core/nim@v1.2
+      with:
+        command: |
+          sudo apk update && sudo apk upgrade && sudo apk add sqlite-static && \
+          nimble build --gcc.exe:gcc --gcc.linkerexe:gcc \
+          --passL:-static --dynlibOverride:libsqlite3.so --passL:/usr/lib/libsqlite3.a -d:release --opt:size -y
     - name: Archive nsense binary
       uses: actions/upload-artifact@v2
       with:
