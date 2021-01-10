@@ -50,6 +50,7 @@ when isMainModule:
 
   if not config.ready():
     # check if config for current model exists or /etc/config(.yml*) exists
+    log.info(&"resolving config {configFile} for {model}...")
     configFile = resolveConfig(wd, model, configFile)
     config = if configFile.len > 0:
       loadConfig(configFile)
@@ -69,7 +70,13 @@ when isMainModule:
     timerFd = sel.registerTimer(int(config.pollTickMs), oneshot = false,0) # once per second 
     zones   = initZones(config.zones)
 
-  let 
+  let
+    switchToAuto = proc(): void =
+      if config.ready():
+        log.info("reset to auto mode...")
+        for (i, zone) in config.zones.pairs:
+          for (j, fan) in zone.fans.pairs:
+            ctrl.send(fan.address, fan.auto)
     loadAndReset = proc(): void =
       if configFile.len > 0:
         config = loadConfig(configFile)
@@ -86,6 +93,7 @@ when isMainModule:
 
   let handlerSwitch = {
     hupFd: proc(timeStr: string): void =
+      switchToAuto()
       log.info(&"{timeStr}: SIGHUP received. Updating configuration ...")
       loadAndReset()
     ,
@@ -94,11 +102,13 @@ when isMainModule:
       loadAndReset()
     ,
     pauseFd: proc(timeStr: string): void =
+      switchToAuto()
       unregisterTimerAndReset()
       log.info(&"{timeStr}: SIGSTOP received. Going idle ...")
     ,
     timerFd: proc(timeStr: string): void =
       if not config.ready():
+        log.info(&"{timeStr}: config wasn't loaded correctly...")
         unregisterTimerAndReset()
         return
       ## iterate through zones and compare temp with level bounds
@@ -126,13 +136,15 @@ when isMainModule:
           state.reset()
     ,
     termFd: proc(timeStr: string): void =
+      switchToAuto()
       unregisterTimerAndReset()
-      log.info("{timeStr}: SIGTERM received. Quiting ... ")
+      log.info(&"{timeStr}: SIGTERM received. Quiting ... ")
       quit(0)
     ,
     killFd: proc(timeStr: string): void =
+      switchToAuto()
       unregisterTimerAndReset()
-      log.info("{timeStr}: SIGKILL received. Quiting ... ")
+      log.info(&"{timeStr}: SIGKILL received. Quiting ... ")
       quit(1)
     ,
   }.toTable

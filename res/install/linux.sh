@@ -31,7 +31,7 @@ bin=${executable##*/}
 
 if [ "$bin" = "systemd" ]; then
 
-    if systemctl status nsense 2>&1 1>/dev/null; then
+    if systemctl is-active nsense 2>&1 1>/dev/null; then
         systemctl stop nsense
     fi
 

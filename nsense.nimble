@@ -3,7 +3,7 @@ import tables
 import strutils
 # Package
 
-version       = "0.6.5"
+version       = "0.6.6"
 author        = "Skynet Core"
 description   = "A new awesome nimble package"
 license       = "MIT"
@@ -25,7 +25,7 @@ task nsense, "Run nsense service":
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
     exec "docker run --rm -v " & dir &
-        ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c '" &
+        ":/home/nim/nord-sense smartcoder/nim:v1.2 bash -c '" &
         "sudo apk update && sudo apk upgrade && sudo apk add sqlite-static &&" &
         " cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc" &
         " --passL:-static --dynlibOverride:libsqlite3.so --passL:/usr/lib/libsqlite3.a -d:release --opt:size -y'"
@@ -54,5 +54,5 @@ task purge, "Removing service from system":
     exec selfExe() & " " & dir & "/res/uninstall/" & hostOS & ".nims"
 
 task clean, "clean artifacts":
-    exec "rm -rf nsensepkg nsense tests/test1 here.pid"
+    exec "sudo rm -rf settings.db run etc nsensepkg nsense usr tests/test1 here.pid"
     echo "Done"

@@ -4,7 +4,7 @@ Description=Acer nsense service
 [Service]
 Type=simple
 WorkingDirectory=/opt/nsense
-ExecStart=/opt/nsense/bin/nsense -p /run/nsense.pid -l error -f
+ExecStart=/opt/nsense/bin/nsense -p /run/nsense.pid -l debug -f
 ExecStop=sh -c 'kill -s TERM `cat /opt/nsense/run/nsense.pid`'
 ExecReload=sh -c 'kill -s HUP `cat /opt/nsense/run/nsense.pid`'
 PIDFile=/run/nsense.pid
