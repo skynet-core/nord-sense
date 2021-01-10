@@ -59,18 +59,18 @@ proc resolveConfig*(wd: string, model: string, configFile: string): string =
       except OSError:
         quit("failed to create '" & configDir & "' :" & getCurrentExceptionMsg(),-1)
       # try to find something from ready to use shared configs
-      let
-        match = model.multiReplace(replacements).toUpper()
-      for file in walkDir(joinPath(wd, shareConfigsDir)):
-        let configFile = file.path.splitFile.name.
-            split('.')[0].multiReplace(replacements).toUpper()
-        if configFile == match:
-          let dest = joinPath(configDir, configFileName)
-          try:
-            copyFile(file.path, dest)
-            return dest
-          except OSError:
-            quit("failed to copy '" & configFile & "' into '" & dest & "': " & getCurrentExceptionMsg(),-1)
+    let
+      match = model.multiReplace(replacements).toUpper()
+    for file in walkDir(joinPath(wd, shareConfigsDir)):
+      let configFile = file.path.splitFile.name.
+          split('.')[0].multiReplace(replacements).toUpper()
+      if configFile == match:
+        let dest = joinPath(configDir, configFileName)
+        try:
+          copyFile(file.path, dest)
+          return dest
+        except OSError:
+          quit("failed to copy '" & configFile & "' into '" & dest & "': " & getCurrentExceptionMsg(),-1)
     return ""
 
 proc configFilePath*(wd: string): string =
